@@ -1,10 +1,12 @@
+import Ecto.Query
 defmodule Versioning.ImageController do
   use Versioning.Web, :controller
 
   alias Versioning.Image
 
-  def index(conn, _params) do
-    images = Repo.all(Image)
+  def index(conn, %{"project_id" => project_id}) do
+    images = Image |> where([p], p.project_id in [^project_id])
+    |>  Repo.all
     render(conn, "index.json", images: images)
   end
 
@@ -24,9 +26,10 @@ defmodule Versioning.ImageController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    image = Repo.get!(Image, id)
-    render(conn, "show.json", image: image)
+  def show(conn, %{"project_id" => project_id}) do
+    images = Image |> where([p], p.project_id in [^project_id])
+    |>  Repo.all
+    render(conn, "index.json", images: images)
   end
 
   def update(conn, %{"id" => id, "image" => image_params}) do

@@ -27,6 +27,7 @@ defmodule Versioning.ProjectController do
     end
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     project = Repo.get!(Project, id)
     render(conn, "show.json", project: project)
@@ -34,7 +35,7 @@ defmodule Versioning.ProjectController do
 
   def index_versions(conn, %{"user" => user_id, "project" => project_id}) do
     projects = Project |> where([p], p.user_id in [^user_id])
-    |> where([p], p.project_id in [^project_id]) |> Repo.all
+    |> where([p], p.project_id in [^project_id]) |>  Repo.all
     render(conn, "index.json", projects: projects)
   end
   def update(conn, %{"id" => id, "project" => project_params}) do

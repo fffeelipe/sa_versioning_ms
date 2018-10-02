@@ -7,7 +7,7 @@ defmodule Versioning.Router do
 
   scope "/api", Versioning do
     pipe_through :api
-    resources "/images", ImageController
+    resources "/images", ImageController, except: [:new, :edit, :delete, :index]
     resources "/projects", ProjectController do
       resources "/images", ImageController
     end

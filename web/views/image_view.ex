@@ -10,8 +10,6 @@ defmodule Versioning.ImageView do
   end
 
   def render("image.json", %{image: image}) do
-    %{id: image.id,
-      project_id: image.project_id,
-      image_url: image.image_url}
+    %{image_url: image.image_url}
   end
 end
