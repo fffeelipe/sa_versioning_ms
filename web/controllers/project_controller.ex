@@ -1,3 +1,4 @@
+import Ecto.Query
 defmodule Versioning.ProjectController do
   use Versioning.Web, :controller
 
@@ -10,9 +11,11 @@ defmodule Versioning.ProjectController do
 
   def create(conn, %{"project" => project_params}) do
     changeset = Project.changeset(%Project{}, project_params)
-
     case Repo.insert(changeset) do
       {:ok, project} ->
+        Enum.each(project_params["pages"], fn (x) -> 
+          Repo.insert(%Versioning.Image{project_id: project.id, image_url: x}) end)
+        #text conn, "Showing id #{project.id}"
         conn
         |> put_status(:created)
         |> put_resp_header("location", project_path(conn, :show, project))
@@ -30,8 +33,9 @@ defmodule Versioning.ProjectController do
   end
 
   def index_versions(conn, %{"user" => user_id, "project" => project_id}) do
-    project = Repo.get!(Project, user_id)
-    render(conn, "show.json", project: project)
+    projects = Project |> where([p], p.user_id in [^user_id])
+    |> where([p], p.project_id in [^project_id]) |> Repo.all
+    render(conn, "index.json", projects: projects)
   end
   def update(conn, %{"id" => id, "project" => project_params}) do
     project = Repo.get!(Project, id)
