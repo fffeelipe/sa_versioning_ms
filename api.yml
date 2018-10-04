@@ -1,0 +1,132 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservice for versioning of comics.
+  description: Java + MySQL
+  license:
+    name: Versioning
+host: 192.168.99.101:4000
+basePath: /api/projects
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /projects:
+    post:
+      summary: Create a new version of a project
+      operationId: createProject
+      parameters:
+        - name: project
+          in: body
+          required: true
+          description: Create a new version of a project
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    get:
+      summary: Returns all versions and projects for user 
+      operationId: getAl Projects
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/ProjectList'
+        '406':
+          description: Not Acceptable (Invalid Params)
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /project/{code}:
+    get:
+      summary: Returns a Project with the given code
+      operationId: ge ProjectByCode
+      parameters:
+        - name: code
+          in: path
+          description: The code of the Project to be returned
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/Project_pages'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '406':
+            description: Not Acceptable (Invalid Params)
+            schema:
+              $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+    
+    
+definitions:
+
+  # Project
+  Project:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      project_id:
+        type: integer
+      pages:
+        type: string
+          
+        
+
+
+  Project_pages:
+    type: object
+    properties:
+      URL:
+        type: string
+        
+  ProjectList:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Project'
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object
