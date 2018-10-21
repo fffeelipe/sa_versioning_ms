@@ -13,6 +13,9 @@ WORKDIR /app
 RUN mix local.hex --force
 
 # Compile the project
-RUN mix do compile
+#RUN apt-get install build-essential rebar -y
+RUN mix local.rebar
+RUN mix deps.get
+RUN mix deps.compile
 RUN chmod +x entrypoint.sh
 CMD "./entrypoint.sh"

@@ -5,6 +5,10 @@ do
 done
 
 # Create, migrate, and seed database if it doesn't exist.
+mix ecto.create
+mix ecto.migrate
+
+
 if [[ -z `psql -Atqc "\\list $PGDATABASE"` ]]; then
   echo "Database $PGDATABASE does not exist. Creating..."
   createdb -E UTF8 $PGDATABASE -l en_US.UTF-8 -T template0
